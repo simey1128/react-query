@@ -6,12 +6,12 @@ import { useGetTodos } from '../hooks/useGetTodos';
 import { useGetUser } from '../hooks/useGetUser';
 import { userState } from '../stores/user';
 import { Todo, User } from '../utils/types';
+import ProgressBar from './progressBar';
 import TodoItem from './TodoItem';
 
 interface TodoListProps {}
 
 const TodoList: React.FC<TodoListProps> = ({}) => {
-  const queryClient = useQueryClient();
   const user = useRecoilValue(userState);
   const { status, error, data } = useGetTodos(user?.id);
 
@@ -27,10 +27,11 @@ const TodoList: React.FC<TodoListProps> = ({}) => {
 export default TodoList;
 
 const MainContainer = styled.div`
-  flex-basis: 80%;
+  width: 100%;
   padding: 10px;
   flex-direction: row;
   display: flex;
   flex-wrap: wrap;
+  flex: 1;
   overflow-y: scroll;
 `;

@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react';
+import { useQueryClient } from 'react-query';
 import { useSetRecoilState } from 'recoil';
 import styled, { createGlobalStyle } from 'styled-components';
 import { useGetUser } from '../hooks/useGetUser';
@@ -8,31 +9,55 @@ interface SelectUserButtonProps {}
 
 const SelectUserButton: React.FC<SelectUserButtonProps> = ({}) => {
   const [name, setName] = useState('');
+  const [saved, saveName] = useState(false);
   const { refetch, data } = useGetUser(name);
-  const setUser = useSetRecoilState(userState);
+  const setUserState = useSetRecoilState(userState);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
-    setUser({
-      id: data?.id as number,
-      name: data?.name as string,
-    });
+    // for making user global state
+    if (data?.id) {
+      setUserState({
+        id: data?.id as number,
+        name: data?.name as string,
+      });
+      saveName(true);
+    } else {
+      setUserState({
+        id: 0,
+        name: '',
+      });
+    }
   }, [data]);
 
-  const onChange = (e: any) => {
+  const onChangeName = (e: any) => {
     setName(e.target.value);
   };
 
-  const onClick = () => {
+  const onLogin = () => {
     refetch();
+  };
+
+  const onLogout = () => {
+    saveName(false);
+    setName('');
+    queryClient.setQueryData(['user'], { id: 0, name: '' });
   };
   return (
     <MainContainer>
       <h5 style={{ color: 'white' }}>TodoList of</h5>
       <TitleContainer>
         <h2>TodoList of</h2>
-        <TextInput type="text" onChange={onChange} value={name} />
+        {saved ? (
+          <h2 style={{ margin: 0, color: '#DC6822' }}>{name}</h2>
+        ) : (
+          <TextInput type="text" onChange={onChangeName} value={name} />
+        )}
       </TitleContainer>
-      <Button onClick={onClick}>보기</Button>
+      <ButtonContainer>
+        <Button onClick={onLogout}>로그아웃</Button>
+        <Button onClick={onLogin}>로그인</Button>
+      </ButtonContainer>
     </MainContainer>
   );
 };
@@ -65,5 +90,11 @@ const TextInput = styled.input`
 
 const Button = styled.button`
   align-self: flex-end;
-  margin-right: 10px;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 90%;
 `;

@@ -7,14 +7,13 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { Todo } from './utils/types';
 import { useQueryClient } from 'react-query';
 import TodoList from './components/TodoList';
+import ProgressBar from './components/progressBar';
+import TodosPage from './pages/todosPage';
 function App() {
-  const user = useRecoilValue(userState);
-  console.log('user: ', user);
-
   return (
     <MainContainer>
       <SelectUserButton />
-      <TodoList />
+      <TodosPage />
     </MainContainer>
   );
 }

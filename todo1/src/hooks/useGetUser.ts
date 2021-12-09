@@ -2,10 +2,13 @@ import axios from 'axios';
 import { useQuery } from 'react-query';
 import { User } from '../utils/types';
 
-const getUserByName = async (name: string): Promise<User> => {
+const getUserByName = async (name: string): Promise<User | undefined> => {
   const { data } = await axios.get(
     `https://jsonplaceholder.typicode.com/users?name=${name}`
   );
+  if (!data.length) {
+    return undefined;
+  }
 
   return {
     id: data[0].id,
@@ -14,7 +17,7 @@ const getUserByName = async (name: string): Promise<User> => {
 };
 
 export const useGetUser = (name: string) => {
-  return useQuery(['user', name], () => getUserByName(name), {
+  return useQuery(['user'], () => getUserByName(name), {
     enabled: false,
     refetchOnWindowFocus: false,
   });
