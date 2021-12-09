@@ -2,14 +2,19 @@ import React, { useState } from 'react';
 import SelectUserButton from './components/selectUserButton';
 import { useGetTodos } from './hooks/useGetTodos';
 import styled, { createGlobalStyle } from 'styled-components';
+import { userState } from './stores/user';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { Todo } from './utils/types';
+import { useQueryClient } from 'react-query';
+import TodoList from './components/TodoList';
 function App() {
-  const { status, data, error } = useGetTodos(1);
+  const user = useRecoilValue(userState);
+  console.log('user: ', user);
+
   return (
     <MainContainer>
       <SelectUserButton />
-      {/* {data?.map((e) => (
-        <h3>{e.content}</h3>
-      ))} */}
+      <TodoList />
     </MainContainer>
   );
 }

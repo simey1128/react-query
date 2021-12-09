@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 import styled, { createGlobalStyle } from 'styled-components';
 import { useGetUser } from '../hooks/useGetUser';
@@ -10,16 +10,20 @@ const SelectUserButton: React.FC<SelectUserButtonProps> = ({}) => {
   const [name, setName] = useState('');
   const { refetch, data } = useGetUser(name);
   const setUser = useSetRecoilState(userState);
+
+  useEffect(() => {
+    setUser({
+      id: data?.id as number,
+      name: data?.name as string,
+    });
+  }, [data]);
+
   const onChange = (e: any) => {
     setName(e.target.value);
   };
 
   const onClick = () => {
     refetch();
-    setUser({
-      id: data?.id as number,
-      name: data?.name as string,
-    });
   };
   return (
     <MainContainer>

@@ -17,8 +17,8 @@ const getTodos = async (userId: number): Promise<Todo[]> => {
   });
 };
 
-export const useGetTodos = (userId: number) => {
-  return useQuery(['todos', userId], () => getTodos(userId), {
+export const useGetTodos = (userId: number | undefined) => {
+  return useQuery(['todos', userId], () => getTodos(userId as number), {
     enabled: !!userId,
   });
 };
