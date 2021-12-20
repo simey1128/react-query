@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import SelectUserButton from './components/selectUserButton';
+import UserPage from './pages/userPage';
 import { useGetTodos } from './hooks/useGetTodos';
 import styled, { createGlobalStyle } from 'styled-components';
 import { userState } from './stores/user';
@@ -9,10 +9,11 @@ import { useQueryClient } from 'react-query';
 import TodoList from './components/TodoList';
 import ProgressBar from './components/progressBar';
 import TodosPage from './pages/todosPage';
+
 function App() {
   return (
     <MainContainer>
-      <SelectUserButton />
+      <UserPage />
       <TodosPage />
     </MainContainer>
   );

@@ -5,23 +5,25 @@ import styled, { createGlobalStyle } from 'styled-components';
 import { useGetUser } from '../hooks/useGetUser';
 import { userState } from '../stores/user';
 
-interface SelectUserButtonProps {}
+interface UserPageProps {}
 
-const SelectUserButton: React.FC<SelectUserButtonProps> = ({}) => {
+const UserPage: React.FC<UserPageProps> = ({}) => {
   const [name, setName] = useState('');
-  const [saved, saveName] = useState(false);
-  const { refetch, data } = useGetUser(name);
+  const [isSignIn, setSignIn] = useState(false);
+
+  const { refetch, data } = useGetUser(name); // no automatic refetching
   const setUserState = useSetRecoilState(userState);
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    // for making user global state
+    // for making user as global state
+
     if (data?.id) {
       setUserState({
         id: data?.id as number,
         name: data?.name as string,
       });
-      saveName(true);
+      setSignIn(true);
     } else {
       setUserState({
         id: 0,
@@ -39,17 +41,20 @@ const SelectUserButton: React.FC<SelectUserButtonProps> = ({}) => {
   };
 
   const onLogout = () => {
-    saveName(false);
-    setName('');
-    queryClient.setQueryData(['user'], { id: 0, name: '' });
+    setSignIn(false);
+    setName(''); // set local state to default
+    queryClient.setQueryData(['user'], { id: 0, name: '' }); // set server state to defualt
   };
+
   return (
     <MainContainer>
       <h5 style={{ color: 'white' }}>TodoList of</h5>
       <TitleContainer>
-        <h2>TodoList of</h2>
-        {saved ? (
-          <h2 style={{ margin: 0, color: '#DC6822' }}>{name}</h2>
+        <Title>TodoList of</Title>
+        {isSignIn ? (
+          <Title margin={0} color="#DC6822">
+            {name}
+          </Title>
         ) : (
           <TextInput type="text" onChange={onChangeName} value={name} />
         )}
@@ -62,7 +67,7 @@ const SelectUserButton: React.FC<SelectUserButtonProps> = ({}) => {
   );
 };
 
-export default SelectUserButton;
+export default UserPage;
 
 const MainContainer = styled.div`
   border-right: solid;
@@ -81,6 +86,11 @@ const TitleContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+`;
+
+const Title = styled.h2<{ margin?: number; color?: string }>`
+  margin: ${(props) => `${props.margin}px`};
+  color: ${(props) => props.color};
 `;
 
 const TextInput = styled.input`
